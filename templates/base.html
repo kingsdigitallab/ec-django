@@ -1,0 +1,51 @@
+{% load staticfiles compress  %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>{% block meta_title %}{% endblock %} | Etat Civil</title>
+  <meta name="author" content="King's Digital Lab">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  {# TODO: set GA_ID in settings and pass it to the context with a context processor #}
+  {% include 'includes/google-analytics.html' %}
+
+  {% compress css %}
+    <link rel="stylesheet" type="text/x-scss" href="{% static 'scss/main.scss' %}" defer>
+  {% endcompress %}
+</head>
+<body>
+  <header>
+    {% include 'includes/header.html' %}
+  </header>
+
+  <nav>
+    {% include 'includes/navigation.html' %}
+  </nav>
+
+  <main>
+    {% block title %}{% endblock %}
+    {% block main %}
+    {% endblock %}
+  </main>
+
+  <footer>
+    {% block footer %}
+    {% include 'includes/footer.html' %}
+    {% endblock %}
+  </footer>
+
+  {% compress js %}
+    <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'vue/dist/vue.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+  {% endcompress %}
+
+  {% block footer_scripts %}{% endblock %}
+
+  {% compress js %}
+  {% endcompress %}
+</body>
+</html>
