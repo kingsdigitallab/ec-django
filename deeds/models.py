@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.utils.translation import gettext as _
-from geonames_place.models import Country, Place
+from geonames_place.models import Place
 from model_utils.models import TimeStampedModel
 
 
@@ -61,11 +61,21 @@ class Person(TimeStampedModel):
 
     def get_origins(self):
         origins = ''
+
         for o in self.origin_from.order_by('order'):
             origins = '{} {} {}'.format(
                 origins, '>' if origins else '', o.place)
 
         return origins.strip()
+
+    def get_professions(self):
+        professions = []
+
+        for p in self.party_to.all():
+            if p.profession and p.profession.title not in professions:
+                professions.append(p.profession.title)
+
+        return ', '.join(professions)
 
     @property
     def birthplace(self):

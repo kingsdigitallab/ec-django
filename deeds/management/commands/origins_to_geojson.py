@@ -1,10 +1,8 @@
 import json
-from argparse import FileType
 from collections import defaultdict
-from datetime import datetime
 
 from deeds.models import Person
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 
 class Command(BaseCommand):
@@ -35,6 +33,7 @@ class Command(BaseCommand):
                 properties['age'] = person.age
                 properties['gender'] = person.gender.title
                 properties['origins'] = person.get_origins()
+                properties['professions'] = person.get_professions()
 
                 geometry = defaultdict()
                 geometry['type'] = 'LineString'
@@ -45,6 +44,7 @@ class Command(BaseCommand):
                 for idx, origin in enumerate(origins):
                     if idx == 0 or idx == origins.count() - 1:
                         pos = 'first' if idx == 0 else 'last'
+
                         properties['origin_{}'.format(
                             pos)] = origin.place.address
                         properties['origin_{}_type'.format(
@@ -53,15 +53,16 @@ class Command(BaseCommand):
                             origin.place.lat)
                         properties['origin_{}_lon'.format(pos)] = float(
                             origin.place.lon)
-                        properties['origin_{}_year'.format(
-                            pos)] = origin.date.year
+                        properties['origin_{}_date'.format(
+                            pos)] = '{} 00:00'.format(origin.date)
                         properties['origin_{}_is_date_computed'.format(
                             pos)] = origin.is_date_computed
 
                     # ts = datetime.fromordinal(
                     #     origin.date.toordinal()).timestamp()
-                    coords.append(
-                        [float(origin.place.lon), float(origin.place.lat)])
+                    coords.append([float(origin.place.lon),
+                                   float(origin.place.lat),
+                                   100, '{} 00:00'.format(origin.date)])
 
                 feature['properties'] = properties
                 geometry['coordinates'] = coords
