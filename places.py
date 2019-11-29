@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 
 import os
+import re
+from collections import OrderedDict
+from functools import reduce
 
 import pandas as pd
+from unidecode import unidecode
 
 
 def get_place_names(xslx_dir):
@@ -25,8 +29,10 @@ def get_place_names(xslx_dir):
         df_places = get_places(df, [''])
         places.extend(df_places)
 
-        places = list(set(places))
-        places.sort(key=str.lower)
+    places = list(set(places))
+    places_dict = reduce(reduce_places, places, dict())
+    places_dict = OrderedDict(sorted(places_dict.items()))
+    places = list(places_dict.values())
 
     with open('places.txt', 'w') as f:
         f.writelines('\n'.join(places))
@@ -79,6 +85,17 @@ def merge_place_names(names):
             merged.append(name)
 
     return ', '.join(merged)
+
+
+def reduce_places(acc, item):
+    key = unidecode(item).lower()
+    key = re.sub(r'\W+', '_', key)
+    key = re.sub(r'^_|_$', '', key)
+
+    if key not in acc:
+        acc[key] = item
+
+    return acc
 
 
 if __name__ == '__main__':

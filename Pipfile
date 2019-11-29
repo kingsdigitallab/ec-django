@@ -17,7 +17,7 @@ pandas = "*"
 [packages]
 django = "*"
 django-extensions = "*"
-django-geonames-place = {git = "https://github.com/kingsdigitallab/django-geonames-place.git",ref = "master",editable = true}
+django-geonames-place = {ref = "master",editable = true,git = "https://github.com/kingsdigitallab/django-geonames-place.git"}
 django-kdl-ldap = "*"
 django-libsass = "*"
 django-model-utils = "*"
@@ -28,6 +28,7 @@ graphene-django = "*"
 django-filter = "*"
 django-rq = "*"
 xlrd = "*"
+unidecode = "*"
 
 [requires]
 python_version = "3.5"
