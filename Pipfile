@@ -12,11 +12,12 @@ pycodestyle = "*"
 tox = "==3.7.0"
 tox-pipenv = "*"
 pygraphviz = "*"
+pandas = "*"
 
 [packages]
 django = "*"
 django-extensions = "*"
-django-geonames-place = {git = "https://github.com/kingsdigitallab/django-geonames-place.git",editable = true,ref = "master"}
+django-geonames-place = {git = "https://github.com/kingsdigitallab/django-geonames-place.git",ref = "master",editable = true}
 django-kdl-ldap = "*"
 django-libsass = "*"
 django-model-utils = "*"
@@ -26,6 +27,7 @@ psycopg2-binary = "*"
 graphene-django = "*"
 django-filter = "*"
 django-rq = "*"
+xlrd = "*"
 
 [requires]
 python_version = "3.5"
