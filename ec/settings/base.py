@@ -272,12 +272,10 @@ if 'django.contrib.gis' in INSTALLED_APPS:
     db_engine = 'django.contrib.gis.db.backends.postgis'
 
 
-AUTH_LDAP_REQUIRE_GROUP = (
-    (
-        LDAPGroupQuery('cn=kdl-staff,' + LDAP_BASE_OU) |
-        LDAPGroupQuery('cn=ec,' + LDAP_BASE_OU)
-    )
-)
+AUTH_LDAP_REQUIRE_GROUP = ((LDAPGroupQuery(
+    'cn=kdl-staff,' + LDAP_BASE_OU) | LDAPGroupQuery(
+    'cn=ec,' + LDAP_BASE_OU)
+))
 
 DEEDS_INITIAL_DATA = {
     'DeedType': ['birth', 'death', 'marriage'],
@@ -292,6 +290,6 @@ GRAPHENE = {
 RQ_QUEUES = {
     'default': {
         'USE_REDIS_CACHE': 'default',
-        'DEFAULT_TIMEOUT': 5 * 60
+        'DEFAULT_TIMEOUT': 10 * 60
     }
 }

@@ -1,5 +1,6 @@
 import json
 from collections import defaultdict
+from datetime import datetime
 
 from deeds.models import Person
 from django.core.management.base import BaseCommand
@@ -33,13 +34,14 @@ class Command(BaseCommand):
                 properties['age'] = person.age
                 properties['gender'] = person.gender.title
                 properties['origins'] = person.get_origins()
-                properties['professions'] = person.get_professions()
+                # properties['professions'] = person.get_professions()
 
                 geometry = defaultdict()
                 geometry['type'] = 'LineString'
 
                 coords = []
 
+                prev_place = None
                 origins = person.origin_from.order_by('date')
                 for idx, origin in enumerate(origins):
                     if idx == 0 or idx == origins.count() - 1:
@@ -58,11 +60,14 @@ class Command(BaseCommand):
                         properties['origin_{}_is_date_computed'.format(
                             pos)] = origin.is_date_computed
 
-                    # ts = datetime.fromordinal(
-                    #     origin.date.toordinal()).timestamp()
-                    coords.append([float(origin.place.lon),
-                                   float(origin.place.lat),
-                                   100, '{} 00:00'.format(origin.date)])
+                    if origin.place != prev_place:
+                        ts = datetime.fromordinal(
+                            origin.date.toordinal()).timestamp()
+                        coords.append([float(origin.place.lon),
+                                       float(origin.place.lat),
+                                       0, int(ts) * -1])
+
+                    prev_place = origin.place
 
                 feature['properties'] = properties
                 geometry['coordinates'] = coords

@@ -261,10 +261,13 @@ def import_person(label, record, gender, deed_date):
     else:
         age = None
 
-    person, _ = Person.objects.get_or_create(
-        name=name, surname=surname, gender=gender, age=age,
-        birth_year=birth_year
+    person, created = Person.objects.get_or_create(
+        name=name, surname=surname, gender=gender, birth_year=birth_year
     )
+
+    if created:
+        person.age = age
+        person.save()
 
     add_origins(person, label, deed_date, birth_date, record)
 
@@ -294,12 +297,12 @@ def add_origins(person, label, deed_date, birth_date, record):
             25)
         is_date_computed = True
 
-    address = '{} {}'.format(
+    address = '{}, {}'.format(
         record['{}\'s birthplace (region or département)'.format(
             label)].strip(),
         record['{}\'s birthplace (locality)'.format(label)].strip())
     address = address.strip()
-    add_origin(person, address, 'FR', 'birth',
+    add_origin(person, address, None, 'birth',
                date=birth_date, is_date_computed=is_date_computed, order=1)
 
     # estimates the date of the previous domicile
@@ -308,12 +311,12 @@ def add_origins(person, label, deed_date, birth_date, record):
         pdd = birth_date + (deed_date - birth_date) / 2
         is_date_computed = True
 
-    address = '{} {}'.format(
+    address = '{}, {}'.format(
         record['{}\'s previous domicile (region or département)'.format(
             label)].strip(),
         record['{}\'s previous domicile (locality)'.format(label)].strip())
     address = address.strip()
-    add_origin(person, address, 'FR', 'domicile',
+    add_origin(person, address, None, 'domicile',
                date=pdd, is_date_computed=is_date_computed, order=3)
 
 
