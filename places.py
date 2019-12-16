@@ -9,13 +9,16 @@ import pandas as pd
 from unidecode import unidecode
 
 
-def get_place_names(xslx_dir):
+def get_place_names(data_dir):
     places = []
 
-    for fn in os.listdir(xslx_dir):
+    for fn in os.listdir(data_dir):
+        if not fn.endswith('.xlsx'):
+            continue
+
         print('.', fn)
 
-        fn = os.path.join(xslx_dir, fn)
+        fn = os.path.join(data_dir, fn)
 
         df = get_sheet(fn, 'Naissances')
         df_places = get_places(df, ['father\'s ', 'mother\'s '])
@@ -42,6 +45,7 @@ def get_place_names(xslx_dir):
 def get_sheet(fn, sheet_name):
     df = pd.read_excel(fn, sheet_name=sheet_name)
     df.columns = map(str.lower, df.columns)
+    df.dropna(how='all', inplace=True)
 
     return df
 
@@ -99,4 +103,4 @@ def reduce_places(acc, item):
 
 
 if __name__ == '__main__':
-    get_place_names('xlsx')
+    get_place_names('data')
